@@ -31,7 +31,7 @@ public class SeperateCity {
 
 		arr = new Data[M];
 
-		findset();
+		makeSet();
 
 		for(int i=0;i<M;i++) {
 			int from = sc.nextInt();
@@ -59,7 +59,7 @@ public class SeperateCity {
 
 		System.out.println(sum-max);
 	}
-	public static void findset() {
+	public static void makeSet() {
 		p = new int[N+1];
 		for(int i=1;i<=N;i++) {
 			p[i]=i;
