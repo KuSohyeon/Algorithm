@@ -39,10 +39,11 @@ public class Beer_BufferedReader {
 			feel = "sad";
 			conv = Integer.parseInt(br.readLine());
 			
+			//편의점 수 + 상근이 집 + 페스티벌 좌표
 			arr = new Data[conv+2];
 			v = new boolean[conv+2];
 			
-			//상근이네 집 좌표
+			//좌표 다 넣어주기
 			for(int i=0;i<conv+2;i++) {
 				st = new StringTokenizer(br.readLine().trim());
 				int x = Integer.parseInt(st.nextToken());
@@ -76,12 +77,12 @@ public class Beer_BufferedReader {
 				feel = "happy";
 				break;
 			}
-			for(int i=1;i<conv+2;i++) {
+			for(int i=1;i<conv+2;i++) {//배열 돌아가면서 조건에 맞는 편의점 넣어주기(순서상관X)
 				if(v[i]) {
 					continue;
 				}
-				if(Math.abs(cur.x - arr[i].x)+Math.abs(cur.y-arr[i].y)<=1000) {
-					q.offer(arr[i]);
+				if(Math.abs(cur.x - arr[i].x)+Math.abs(cur.y-arr[i].y)<=1000) { 
+					q.offer(arr[i]);//조건 충족할때만 큐에 넣어주기
 					v[i]=true;
 	
 				}

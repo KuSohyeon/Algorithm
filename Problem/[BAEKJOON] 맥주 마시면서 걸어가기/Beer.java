@@ -38,7 +38,7 @@ public class Beer {
 			arr = new Data[conv+2];
 			v = new boolean[conv+2];
 			
-			//상근이네 집 좌표
+
 			for(int i=0;i<conv+2;i++) {
 				int x = sc.nextInt();
 				int y = sc.nextInt();
