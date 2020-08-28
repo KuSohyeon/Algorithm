@@ -15,6 +15,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class TwoArmScales {
@@ -50,7 +51,9 @@ public class TwoArmScales {
 	}
 	private static void perm(int cnt) {//순서에 따라 무게가 달라지므로 순열 만들어주기
 		if(cnt==N) {
-			dfs(0,0,0,0,per);// 배열 만들어지면 subset만드는 dfs에 만든 배열 파라미터로 넘겨주기
+
+			dfs(0,0,0,per);// 배열 만들어지면 subset만드는 dfs에 만든 배열 파라미터로 넘겨주기
+
 			return;
 		}
 		for(int i=0;i<N;i++) {
@@ -62,7 +65,7 @@ public class TwoArmScales {
 		}
 		
 	}
-	private static void dfs(int cnt,int lc,long w1, long w2,int [] per) {//전달받은 순열로 부분집합 만들기
+	private static void dfs(int cnt,long w1, long w2,int [] per) {//전달받은 순열로 부분집합 만들기
 		if(w1<w2) {//혹시 중간에 무게 엎어지면 return;
 			return;
 		}
@@ -71,9 +74,9 @@ public class TwoArmScales {
 			return;
 		}
 		check[cnt]=true;
-		dfs(cnt+1,lc+1,w1+per[cnt],w2,per);
+		dfs(cnt+1,w1+per[cnt],w2,per);
 		check[cnt]=false;
-		dfs(cnt+1,lc,w1,w2+per[cnt],per);
+		dfs(cnt+1,w1,w2+per[cnt],per);
 		
 	}
 }
