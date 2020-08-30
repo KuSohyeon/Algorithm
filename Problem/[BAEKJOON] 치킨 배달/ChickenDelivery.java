@@ -21,8 +21,7 @@ public class ChickenDelivery {
 	static int N,M;
 	static int [][] map;
 	static List<Data> home = new LinkedList<>();
-	static List<Data> chick = new LinkedList<>();
-	static Data[] chicken;
+	static List<Data> chicken = new LinkedList<>();
 	static Data[] winner;
 	static int total = Integer.MAX_VALUE;
 	public static void main(String[] args) throws IOException {
@@ -43,15 +42,9 @@ public class ChickenDelivery {
 					home.add(new Data(i,j));
 				}
 				if(map[i][j]==2) { //치킨집 따로 챙겨두기
-					chick.add(new Data(i,j));
+					chicken.add(new Data(i,j));
 				}
 			}
-		}
-		//조합만들꺼니까 치킨 배열 만들어주기
-		chicken = new Data[chick.size()];
-		int cnt=0;
-		for(Data d : chick) {
-			chicken[cnt++]=d;
 		}
 		
 		comb(0,0);
@@ -63,8 +56,8 @@ public class ChickenDelivery {
 			total = Math.min(total, calDist()); //최소값만 업데이트
 			return;
 		}
-		for(int i=start;i<chicken.length;i++) {
-			winner[cnt] = chicken[i];
+		for(int i=start;i<chicken.size();i++) {
+			winner[cnt] = chicken.get(i);
 			comb(cnt+1,i+1);
 		}
 		
