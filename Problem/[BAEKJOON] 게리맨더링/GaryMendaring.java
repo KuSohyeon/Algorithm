@@ -41,9 +41,9 @@ public class GaryMendaring {
 		
 		st = new StringTokenizer(br.readLine().trim());
 		
-		people = new int[N+1];
-		map = new int[N+1][N+1];
-		isSelected = new boolean[N+1];
+		people = new int[N+1]; // 인구 수 받아줄 배열
+		map = new int[N+1][N+1]; // 인접 행렬
+		isSelected = new boolean[N+1]; // 부분집합에 사용
 		copy = new int[N+1][N+1]; //우리구역 정보만 있는 배열 이용할거니까 copy 배열 생성
 		A = new ArrayList<Integer>();
 		B = new ArrayList<Integer>();
@@ -51,7 +51,7 @@ public class GaryMendaring {
 		for(int i=1;i<=N;i++) {
 			people[i]=Integer.parseInt(st.nextToken());
 		}
-		
+		// 입력 형태 인접 리스트로 변환해서 넣어주기
 		for(int i=1;i<=N;i++) {
 			st = new StringTokenizer(br.readLine().trim());
 			int cnt = Integer.parseInt(st.nextToken());
