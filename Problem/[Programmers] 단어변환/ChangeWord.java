@@ -25,12 +25,10 @@ class ChangeWord {
         for(int i=0;i<N;i++){
 
             if(v[i]) continue;
-            char [] next = input[i].toCharArray();
-            char [] now = start.toCharArray();
-
+            
             int cnt=0;
-            for(int j=0;j<now.length;j++){
-                if(now[j]!=next[j]){
+            for(int j=0;j<start.length();j++){
+                if(start.charAt(j)!=input[i].charAt(j)){
                     ++cnt;
                 }
             }
@@ -38,12 +36,9 @@ class ChangeWord {
             if(cnt>1) continue;
 
             v[i]=true;
-            String s = "";
-            for(int j=0;j<next.length;j++){
-                s += next[j];
-            }
 
-            dfs(s,result+1);
+
+            dfs(input[i],result+1);
             v[i]=false;
           }
         return;
