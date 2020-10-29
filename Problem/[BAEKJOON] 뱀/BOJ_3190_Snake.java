@@ -72,7 +72,7 @@ public class BOJ_3190_Snake {
 		q.offer(new Snake(1,1));
 		
 		map[curI][curJ]=1;
-		result = 1;// 시작부터 1초라고 했음 -> map이 0으로 초기호
+		result = 1;// 시작부터 1초라고 했음 -> map이 0으로 초기화되어있기때문
 		while(true) {
 			
 			Snake cur = q.poll();
