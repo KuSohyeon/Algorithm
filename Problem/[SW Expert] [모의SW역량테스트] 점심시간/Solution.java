@@ -5,33 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-/*
- * 모든 사람들이 계단을 내려가 아래층으로 이동할 최소 시간을 구하라
- * 계단은 최대 3명이 이용 가능
- * 계단 입구에 도착하면 1분 후 , 아래칸으로 내려갈 수 있다.
- * 계단을 올라간 후 완전히 내려가는데는 계단길이만큼의 분이 걸린다.
- * 1. 계단으로 이동한다.(걸리는 시간)
- * 2. 사람이 없다면 1분 후, 내려간다.
- * 3. 사람이 있다면 대기한다.
- * 조합 2C1 , 완탐
- * 49/50...........
- */
-/*예제 테케
-1
-5
-0 1 1 0 0
-0 0 1 0 3
-0 1 0 1 0
-0 0 0 0 0
-1 0 5 0 0
- */
-
 public class Solution {
 	static int N,result;
 	static int [][] map;
 	static List<Data> person;
-	static List<Data> stair1;
-	static List<Data> stair2;
 	static Data [] stairs;
 	static boolean [] v;
 	static class Data implements Comparable<Data>{
@@ -58,7 +35,7 @@ public class Solution {
 			return Integer.compare(this.time, o.time);
 		}
 	}
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 
@@ -91,11 +68,14 @@ public class Solution {
 			subset(0);
 
 			System.out.println("#"+tc+" "+result);
+
 		}
+
 	}
+	//부분집합을 이용해서 모든 경우의 수 다 해보기 -> 사람의 수는 최대 10 => 10^2
 	private static void subset(int cnt) {
 		if(cnt==person.size()) {
-			useStairs();
+			calTime();
 			return;
 		}
 		v[cnt]=true;
@@ -103,124 +83,102 @@ public class Solution {
 		v[cnt]=false;
 		subset(cnt+1);
 	}
-	private static void useStairs() {
-		stair1 = new ArrayList<Data>();
-		stair2 = new ArrayList<Data>();
+	private static void calTime() {
 
-		for(int i=0;i<v.length;i++) {
-			if(v[i]) {
-				stair1.add(person.get(i));
-			}else {
-				stair2.add(person.get(i));
-			}
-		}
-		
-		setTime();
+		//각 계단을 이용하는 시간 구하기
+		int cal = 0,cal1=0,cal2=0;
+		cal1 = usingStair(0);
+		cal2 = usingStair(1);
 
-		int tmp = 0;
-		tmp = calStair(1)-1;
-		tmp = Math.max(tmp, calStair(2)-1);
+		// 둘 중에 최대값이 최종 이용하는 시간
+		cal = Math.max(cal1, cal2);
 
-		result = Math.min(tmp, result);
-
+		// result와 비교해서 최소값으로 넣어주기
+		result = Math.min(result, cal);
 	}
-	private static int calStair(int num) {
-		
-		List<Data> q = new ArrayList<Data>();
-		int usingTime=0;
-		if(num==1) {
-			Collections.sort(stair1);
-			usingTime = stairs[0].time; // 계단길이 K
-			q = stair1;
-		}else {
-			Collections.sort(stair2);
-			usingTime = stairs[1].time; // 계단길이 K
-			q = stair2;
-		}
+	private static int usingStair(int num) {
 
-		int [] use = new int[3];
-		int size = q.size();
-		if(size==0) return 0;
-		int time = 0; // 계단도착 1분 후부터 계단 이용 가능
-		int usingPerson = 0,index=0;
+		// 파라미터로 전달되는 값을 받아 해당 계단을 이용하는 사람 리스트를 만들기
+		List<Data> list = new ArrayList<Data>();
+		int len = stairs[num].time;  // 계단의 길이
+		int time = 0, index=0;
 		boolean flag = true;
+		set(list,num);
+		Collections.sort(list);
 
-		while(flag) {
-			
-			if(index==size) {
-				int cnt=0;
+		// 이용가능한 계단 배열
+		int [] available = new int[3];
+
+		loop:while(flag) {
+			// 마지막 사람까지 갔으면 이제 내려가는 시간만 더해주기
+			if(index==list.size()) { 
+				downStairs(available);
 				time++;
-				for(int i=0;i<3;i++) {
-					if(use[i]==0) { 
-						cnt++;
-						continue;
-					}
-					if(--use[i]==0) {
-						usingPerson--;
-					}
-				}
-				if(cnt==3) return time;
+				if(check(available)) break; // 다내려갔으면 끝내기
 				continue;
 			}
-			
-			time++;
-			
-			if(usingPerson<3) {
-				if(index!=0) {
-					if(q.get(index).time == q.get(index-1).time) {
-						for(int i=0;i<3;i++) {
-							if(use[i]==0) {
-								use[i]=usingTime;
-								usingPerson++;
-								index++;
-								break;
-							}
+			// 만약 앞에사람하고 동시에 도착한 경우에는 계단 이용할 수 있으면 동시에 내려가기(시간을 안더해줌)
+			if(index>0 && list.get(index).time==list.get(index-1).time) {
+				if(isPossible(available)) {
+					for(int i=0;i<3;i++) {
+						if(available[i]==0) {
+							available[i]=len;
+							index++;
+							continue loop;
 						}
-						time--;
-						continue;
 					}
-					
 				}
 			}
-			
+			time++;
+			downStairs(available); // 내려가기
+			if(!isPossible(available)) continue; // 계단 이용못하면 넘겨주기
+			if(time<list.get(index).time) continue; // 만약 아직 내가 내려갈 시간이 안됐으면 기다리기
+			// 이용 가능한 계단이 있다면
 			for(int i=0;i<3;i++) {
-				if(use[i]==0) continue;
-				if(--use[i]==0) {
-					usingPerson--;
+				if(available[i]==0) {
+					available[i]=len;
+					index++;
+					break;
 				}
 			}
-
-			if(usingPerson==3) continue;
-
-			if(time>q.get(index).time) {
-				for(int i=0;i<3;i++) {
-					if(use[i]==0) {
-						use[i]=usingTime;
-						usingPerson++;
-						index++;
-						break;
-					}
-				}
-			}// end if
-
 		}
 
 		return time;
 	}
-	private static void setTime() {
-
-		Data stair = stairs[0];
-		for(int i=0;i<stair1.size();i++) {
-			Data now = stair1.get(i);
-			int time = Math.abs(now.i - stair.i) + Math.abs(now.j - stair.j);
-			now.time = time;
+	// 계단 이용 끝났는지 확인하는 메소드(젤 마지막에 사용)
+	private static boolean check(int[] available) {
+		for(int i=0;i<3;i++) {
+			if(available[i]!=0) return false;
 		}
-
-		stair = stairs[1];
-		for(int i=0;i<stair2.size();i++) {
-			Data now = stair2.get(i);
-			int time = Math.abs(now.i - stair.i) + Math.abs(now.j - stair.j);
-			now.time = time;
+		return true;
+	}
+	// 이용가능한 계단 유무를 알려주는 method
+	private static boolean isPossible(int[] available) {
+		for(int i=0;i<3;i++) {
+			if(available[i]==0) return true;
+		}
+		return false;
+	}
+	// 계단 한칸 씩 내려주는 method
+	private static void downStairs(int[] available) {
+		for(int i=0;i<3;i++) {
+			if(available[i]==0)
+				continue;
+			--available[i];
+		}
+	}
+	// 사람 - 계단 거리 계산해서 리스트로 만들어주는 method
+	private static void set(List<Data> list, int num) {
+		int dist = 0, stairI = stairs[num].i, stairJ = stairs[num].j;
+		for(int i=0;i<person.size();i++) {
+			Data now = person.get(i);
+			if(v[i] && num==0) {
+				dist = Math.abs(now.i-stairI)+Math.abs(now.j-stairJ)+1; // 계단입구에 도착하면 1분 후 아래칸으로 내려갈 수 있다.
+				list.add(new Data(now.i, now.j, dist));
+			}else if(!v[i] && num==1) {
+				dist = Math.abs(now.i-stairI)+Math.abs(now.j-stairJ)+1; // 계단입구에 도착하면 1분 후 아래칸으로 내려갈 수 있다.
+				list.add(new Data(now.i, now.j, dist));
+			}
 		}
 
 	}
