@@ -1,3 +1,6 @@
+//[프로그래머스] 튜플
+// 2019 카카오 개발
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
