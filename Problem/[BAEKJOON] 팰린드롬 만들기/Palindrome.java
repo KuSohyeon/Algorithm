@@ -1,7 +1,9 @@
+//[백준] 팰린드롬 만들기
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Palindrome {
+public class Palindrome{
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -33,18 +35,6 @@ public class Palindrome {
 			System.exit(0);
 		}
 		else {
-			if(s.length()%2==0) { // 짝수인 경우
-				int low = 0, high = s.length()-1;
-				for(int i=0;i<26;i++) {
-					if(low>=high) break;
-					if(alpha[i]==0) continue;
-					crr[low++] = (char)(i+'A');
-					alpha[i]--;
-					crr[high--] = (char)(i + 'A');
-					alpha[i]--;
-					if(alpha[i] > 1) i--;
-				}
-			}else { // 홀수인 경우
 				int low = 0, high = s.length()-1;
 				for(int i=0;i<26;i++) {
 					if(low>=high) break;
@@ -53,10 +43,10 @@ public class Palindrome {
 					alpha[i]--;
 					crr[high--] = (char)(i + 'A');
 					alpha[i]--;
-					if(alpha[i]>1) i--;
+					if(alpha[i] > 1) i--;
 				}
-				crr[low] = (char)(index + 'A'); // 중간에 홀수인거 넣어주기
-			}
+				if(s.length()%2==1) crr[low] = (char)(index + 'A'); // 중간에 홀수인거 넣어주기
+			
 		}
 		
 		String start = "";
