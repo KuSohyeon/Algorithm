@@ -13,32 +13,23 @@
  */
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class MagicSharkWithFireStorm {
 	static int N,Q,max,result;
-	static int [][] map;
+	static int [][] map, tmp;
 	static boolean [][] v;
-	static List<Integer> input;
 	static int [] dy = {-1,1,0,0};
 	static int [] dx = {0,0,-1,1};
 	static class Data{
 		int i;
 		int j;
-		int cnt;
-		public Data(int i, int j, int cnt) {
+		public Data(int i, int j) {
 			super();
 			this.i = i;
 			this.j = j;
-			this.cnt = cnt;
-		}
-		@Override
-		public String toString() {
-			return "Data [i=" + i + ", j=" + j + ", cnt=" + cnt + "]";
 		}
 	}
 	public static void main(String[] args) throws Exception{
@@ -50,7 +41,6 @@ public class MagicSharkWithFireStorm {
 		
 		int size = (int)Math.pow(2, N);
 		map = new int[size][size];
-		input = new ArrayList<Integer>();
 		
 		for(int i=0;i<size;i++) {
 			st = new StringTokenizer(br.readLine());
@@ -62,13 +52,7 @@ public class MagicSharkWithFireStorm {
 		
 		st = new StringTokenizer(br.readLine());
 		for(int n=0;n<Q;n++) {
-			int a = Integer.parseInt(st.nextToken());
-			input.add(a);
-		}
-		
-		// 명령의 개수만큼 반복
-		for(int i=0;i<input.size();i++) {
-			int now= input.get(i);
+			int now = Integer.parseInt(st.nextToken());
 			// 1. 토네이도 일으키기
 			tornado(now);
 			// 2. 얼음 녹이기
@@ -120,37 +104,27 @@ public class MagicSharkWithFireStorm {
 	private static void tornado(int now) {
 		int size = (int)Math.pow(2, N);
 		int nowSize = (int)Math.pow(2, now);
-		for(int i=0;i<size;i++) {
-			if(i % nowSize != 0) continue; 
-			for(int j=0;j<size;j++) {
-				if(j % nowSize != 0) continue;
+		for(int i=0;i<size;i+=nowSize) {
+			for(int j=0;j<size;j+=nowSize) {
 				rotation(i,j,nowSize);
 			}
 		}
 	}
 	// 시계방향으로 90도 돌리는 method
 	private static void rotation(int r, int c, int nowSize) {
-		int [][] tmp = new int[nowSize][nowSize]; // L 크기만큼의 배열을 만들어서
-		int [][] copy = new int[nowSize][nowSize]; // 돌린거 넣어줄 배열 만들어주기
-		
-		// 원본 복사
-		for(int i=0;i<nowSize;i++) {
-			for(int j=0;j<nowSize;j++) {
-				tmp[i][j] = map[r+i][c+j];
-			}
-		}
+		tmp = new int[nowSize][nowSize]; // L 크기만큼의 배열을 만들어서
 		
 		// 규칙을 찾아서 돌리기
 		for(int i=0;i<nowSize;i++) {
 			for(int j=0;j<nowSize;j++) {
-				copy[j][nowSize-1-i]=tmp[i][j];
+				tmp[j][nowSize-1-i]=map[i+r][j+c];
 			}
 		}
 		
 		// 시계방향으로 돌린거 원본에 덮어쓰기
 		for(int i=r;i<r+nowSize;i++) {
 			for(int j=c;j<c+nowSize;j++) {
-				map[i][j]=copy[i-r][j-c];
+				map[i][j]=tmp[i-r][j-c];
 			}
 		}
 	}
@@ -160,7 +134,7 @@ public class MagicSharkWithFireStorm {
 		int cnt = 0;
 		int size = (int)Math.pow(2, N);
 		v[r][c]=true;
-		q.offer(new Data(r,c,1));
+		q.offer(new Data(r,c));
 		
 		while(!q.isEmpty()) {
 			Data cur = q.poll();
@@ -171,7 +145,7 @@ public class MagicSharkWithFireStorm {
 				int ni = cur.i + dy[d];
 				int nj = cur.j + dx[d];
 				if(ni<0 || ni>=size|| nj<0 || nj>=size || v[ni][nj] || map[ni][nj]==0) continue;
-				q.offer(new Data(ni,nj,cnt+1));
+				q.offer(new Data(ni,nj));
 				v[ni][nj]=true;
 			}
 		}
