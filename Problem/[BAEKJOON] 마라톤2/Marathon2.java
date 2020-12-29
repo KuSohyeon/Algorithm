@@ -1,5 +1,5 @@
 //[백준] 마라톤2
-
+// https://train-validation-test.tistory.com/entry/%EB%B0%B1%EC%A4%80-10653-%EB%B2%88-Gold-V-%EB%A7%88%EB%9D%BC%ED%86%A42-Solved-By-Ja
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
