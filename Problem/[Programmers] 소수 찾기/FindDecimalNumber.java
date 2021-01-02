@@ -67,6 +67,7 @@ class FindDecimalNumber {
         int cnt = 0;
         for(int i=1;i<=numb;i++){
             if(numb%i==0) cnt++;   
+            if(cnt>2) return; // 소수가 아니면 바로 리턴 (시간초과 예방)
         }
     
         if(cnt==2) {
