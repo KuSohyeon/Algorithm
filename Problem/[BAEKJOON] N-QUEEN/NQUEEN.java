@@ -14,22 +14,21 @@ public class NQUEEN {
 		
 		for(int i=0;i<N;i++) { // 첫 번째 행 탐색
 			v[0][i]=true;
-			dfs(1,i,0);
+			dfs(1);
 			v[0][i]=false;
 		}
 		
 		System.out.println(result);
 	}
-	private static void dfs(int i, int j, int cnt) {
+	private static void dfs(int i) {
 		if(i==N) { // N행이면 탐색 끝
 			result++;
 			return;
 		}
 		for(int c=0;c<N;c++) {
-			if(c==j) continue; // 이전에 놓았던 곳과 같은 열이면 continue;
 			if(!check(i,c)) continue; // 현재 좌표 가능한지 확인
 			v[i][c]=true; // 방문 처리
-			dfs(i+1,c,cnt+1); // 다음 행 탐색하러가기
+			dfs(i+1); // 다음 행 탐색하러가기
 			v[i][c]=false; //백트래킹
 		}
 		
